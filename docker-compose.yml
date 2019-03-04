@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - 9906:3306
+  web:
+    image: php:7.2.2-apache
+    container_name: php_web
+    depends_on:
+      - db
+    volumes:
+      - ./sites/:/var/www/html/
+    ports:
+      - 8100:80
+    stdin_open: true
+    tty: true
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+    - db
+    external_links:
+    - db:mysql
+    ports:
+    - 9191:80
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: pass
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: db
